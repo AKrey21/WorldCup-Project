@@ -34,6 +34,7 @@ export type Action =
   | { type: 'addPick'; input: NewPickInput }
   | { type: 'settlePick'; id: string; result: PickResult }
   | { type: 'reopenPick'; id: string }
+  | { type: 'setClosingOdds'; id: string; closingOdds: number | undefined }
   | { type: 'deletePick'; id: string }
   | { type: 'resetAll' }
 
@@ -96,6 +97,13 @@ function reducer(state: AppState, action: Action): AppState {
         ...state,
         picks: state.picks.map((p) =>
           p.id === action.id ? { ...p, result: 'pending', settledAt: undefined } : p,
+        ),
+      }
+    case 'setClosingOdds':
+      return {
+        ...state,
+        picks: state.picks.map((p) =>
+          p.id === action.id ? { ...p, closingOdds: action.closingOdds } : p,
         ),
       }
     case 'deletePick':

@@ -6,6 +6,7 @@
 
 import type { AppState, Pick } from '../types'
 import { pickProfit } from './settlement'
+import { clvOf } from './clv'
 
 function csvCell(v: string | number | undefined | null): string {
   if (v === undefined || v === null) return ''
@@ -29,6 +30,8 @@ const CSV_HEADERS = [
   'stake',
   'result',
   'profit',
+  'closingOdds',
+  'clvPct',
 ] as const
 
 /** Flatten every pick (with its match + derived fields) into one CSV. */
@@ -52,6 +55,8 @@ export function picksToCsv(state: AppState): string {
       p.stake,
       p.result,
       pickProfit(p).toFixed(2),
+      p.closingOdds ?? '',
+      p.closingOdds !== undefined ? (clvOf(p.oddsDecimal, p.closingOdds)?.pct.toFixed(4) ?? '') : '',
     ]
       .map(csvCell)
       .join(',')

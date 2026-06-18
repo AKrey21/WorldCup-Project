@@ -4,6 +4,7 @@ import {
   fixtureSelections,
   getModel,
   loadFixtures,
+  loadHistoricalMatches,
   modelReady,
   priceFixture,
   selectionKey,
@@ -11,6 +12,7 @@ import {
 } from '../lib/bestbets'
 import type { FittedModel } from '../lib/model/fit'
 import { goalEnvironment } from '../lib/recalibration'
+import { getBootstrapModels, probabilityBand, type ProbBand } from '../lib/uncertainty'
 import { useLocalStorage } from '../lib/useLocalStorage'
 import type { PickDraft } from './LogPickForm'
 import { OddsImportAI } from './OddsImportAI'
@@ -49,6 +51,9 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
   const [bookOdds, setBookOdds] = useLocalStorage<Record<string, number>>('wcpp-book-odds', {})
   const [hcapLines, setHcapLines] = useLocalStorage<Record<string, number>>('wcpp-hcap-lines', {})
   const [expanded, setExpanded] = useState<string | null>(null)
+  // Bootstrap uncertainty is opt-in (a one-time ~2s compute) so it never freezes load.
+  const [showBands, setShowBands] = useState(false)
+  const [bootstrap, setBootstrap] = useState<FittedModel[] | null>(null)
 
   // Fit the model after first paint so the spinner shows rather than blocking it.
   useEffect(() => {
@@ -66,14 +71,39 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
 
   // Adaptive goal-environment scale from the games played so far (1 = off).
   const goalEnv = useMemo(() => (model ? goalEnvironment(model) : null), [model])
+  const scale = recalibrate ? (goalEnv?.scale ?? 1) : 1
+  // Busy is derivable: bands requested, model ready, ensemble not computed yet.
+  const bandsBusy = showBands && !!model && !bootstrap
+
+  // Compute the bootstrap ensemble once, lazily, when the user opts into bands.
+  // setTimeout(0) lets the "busy" hint paint before the ~2s compute blocks.
+  useEffect(() => {
+    if (!showBands || !model || bootstrap) return
+    const t = setTimeout(() => {
+      setBootstrap(getBootstrapModels(loadHistoricalMatches()))
+    }, 0)
+    return () => clearTimeout(t)
+  }, [showBands, model, bootstrap])
+
+  // Per-fixture probability bands (only once the ensemble exists and bands are on).
+  const bands = useMemo(() => {
+    if (!showBands || !bootstrap) return null
+    const map = new Map<string, ProbBand>()
+    const fixtures = loadFixtures().filter((f) => !upcomingOnly || f.date >= TODAY)
+    for (const f of fixtures) {
+      const band = probabilityBand(bootstrap, f.home, f.away, Boolean(f.neutral), scale)
+      if (band) map.set(`${f.date}|${f.home}|${f.away}`, band)
+    }
+    return map
+  }, [showBands, bootstrap, upcomingOnly, scale])
 
   const board = useMemo(() => {
     if (!model) return null
     const fixtures = loadFixtures()
       .filter((f) => !upcomingOnly || f.date >= TODAY)
       .sort((a, b) => a.date.localeCompare(b.date))
-    return buildBoard(model, fixtures, recalibrate ? (goalEnv?.scale ?? 1) : 1)
-  }, [model, upcomingOnly, goalEnv, recalibrate])
+    return buildBoard(model, fixtures, scale)
+  }, [model, upcomingOnly, scale])
 
   // One entry per fixture, each pre-priced, then filtered and sorted.
   const cards = useMemo(() => {
@@ -280,6 +310,22 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
               Goal-env recalibration
               {goalEnv && goalEnv.scale > 1.01 ? ` (×${goalEnv.scale.toFixed(2)})` : ''}
             </label>
+            <label
+              className="flex cursor-pointer items-center gap-2"
+              title="Bootstrap the model on resampled history (~10 refits, one-time ~2s) and show the spread of each probability — wider band = thinner data on those teams."
+            >
+              <input
+                type="checkbox"
+                checked={showBands}
+                onChange={(e) => setShowBands(e.target.checked)}
+              />
+              Uncertainty bands
+            </label>
+            {showBands && bandsBusy && (
+              <span className="rounded-md bg-neutral-800 px-2 py-0.5 text-neutral-400">
+                Bootstrapping the model…
+              </span>
+            )}
             {illustrative && (
               <span className="rounded-md bg-amber-500/15 px-2 py-0.5 text-amber-300">
                 Demo prices — replace with real SG Pools odds for a true edge.
@@ -321,6 +367,7 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
                 onToggle={() => setExpanded(expanded === a.fixtureId ? null : a.fixtureId)}
                 onOdds={setOdds}
                 onLog={onLogToLab}
+                band={bands?.get(a.fixtureId)}
               />
             ))}
           </div>

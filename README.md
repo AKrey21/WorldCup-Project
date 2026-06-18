@@ -29,6 +29,17 @@ Single-user local web app — Vite + React + TypeScript + Tailwind, persisted to
   Anthropic's servers, so this static, backend-less app gets live news with no
   scraper and no CORS proxy; it uses the billable web-search add-on, so it's an
   opt-in toggle.
+
+  Each match card also carries a **confidence tier** — Clear favourite / Lean /
+  **Tossup** — a *separate axis from value* (the best price is often on a tossup,
+  so this never reads as a bet signal). Two opt-in switches sit in the controls:
+  **goal-environment recalibration**, an adaptive, shrunk scale on the model's
+  expected goals so BTTS/Over track the tournament's live scoring rate (this World
+  Cup is running hot), and **uncertainty bands**, a nonparametric bootstrap that
+  shows a ± on each probability — wide means the model has thin data on those
+  teams. A per-match **AI context brief** (server-side web search) surfaces
+  injuries, suspensions, likely line-ups, form and motivation — the things a
+  full-time-goals model is blind to — as *information only*, never a model input.
 - **Results** — the model's **out-of-sample report card**. Every World Cup match
   already played is re-run through a model fit *only* on internationals before the
   tournament kicked off (`getPreTournamentModel()`, cutoff 2026-06-11) and
@@ -45,9 +56,19 @@ Single-user local web app — Vite + React + TypeScript + Tailwind, persisted to
   out-predicts the bookmaker — the benchmark that actually answers "are we beating
   the odds?". Beating a coin-flip is trivial; beating the market is the real test,
   and near-parity is a respectable result for a simple full-time-goals model.
+
+  Two collapsible deep-dives back the headline up. **Confidence — does the colour
+  mean anything?** shows the realised hit rate by Clear / Lean / Tossup tier, per
+  market, against the rate the model implied (so the colours are *earned*, not
+  asserted). **Reliability — predicted vs actual** bins every forecast by its
+  probability and plots claimed vs realised for 1X2, Over/Under and BTTS — making
+  the model's over- or under-confidence visible rather than assumed.
 - **My Lab** — the paper-trading bankroll, manual pick logging, SG Pools
   paste-import, settlement, the equity dashboard described below, and a one-click
-  **CSV / JSON export** of your full picks-vs-odds dataset.
+  **CSV / JSON export** of your full picks-vs-odds dataset. Each pick also takes a
+  **closing price**, and the lab reports **Closing Line Value (CLV)** — whether you
+  beat the close, per pick and in aggregate. CLV is the surest signal of a real
+  edge and works on a far smaller sample than win/loss, so it's the metric to watch.
 
 The AI features (paste importer, per-match verdict) need your own Anthropic API
 key. Set it once via the **API key** button in the header; it is stored only in

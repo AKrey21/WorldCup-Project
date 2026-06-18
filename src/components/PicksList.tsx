@@ -10,7 +10,48 @@ import {
 } from '../lib/settlement'
 import { fmtDateTime, fmtMoney, fmtSignedMoney } from '../lib/format'
 import { downloadFile, exportFilename, picksToCsv, stateToJson } from '../lib/export'
+import { clvOf, clvSummary } from '../lib/clv'
 import { EVBadge } from './EVBadge'
+
+/** Enter the market's closing odds for a pick and show the resulting CLV. */
+function ClvControl({ pick }: { pick: Pick }) {
+  const dispatch = useDispatch()
+  const [raw, setRaw] = useState(pick.closingOdds?.toString() ?? '')
+  const clv = pick.closingOdds !== undefined ? clvOf(pick.oddsDecimal, pick.closingOdds) : null
+
+  function commit(v: string) {
+    setRaw(v)
+    const n = parseFloat(v)
+    dispatch({
+      type: 'setClosingOdds',
+      id: pick.id,
+      closingOdds: v && Number.isFinite(n) && n > 1 ? n : undefined,
+    })
+  }
+
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span className="text-xs text-neutral-500">Close</span>
+      <input
+        value={raw}
+        onChange={(e) => commit(e.target.value)}
+        inputMode="decimal"
+        placeholder="@"
+        aria-label="Closing odds"
+        className="w-14 rounded-md border border-neutral-700 bg-neutral-800 px-1.5 py-0.5 text-right text-xs tabular-nums text-neutral-100 placeholder-neutral-500 focus:border-neutral-500 focus:outline-none"
+      />
+      {clv && (
+        <span
+          className={`text-xs font-medium tabular-nums ${clv.beat ? 'text-emerald-400' : 'text-red-400'}`}
+          title={clv.beat ? 'You beat the closing line' : 'You took a worse price than the close'}
+        >
+          {clv.pct >= 0 ? '+' : ''}
+          {(clv.pct * 100).toFixed(1)}% CLV
+        </span>
+      )}
+    </span>
+  )
+}
 
 const RESULT_LABEL: Record<PickResult, string> = {
   pending: 'Pending',
@@ -114,6 +155,7 @@ function PendingPick({ pick, match }: { pick: Pick; match: Match | undefined }) 
           {pick.estProb !== undefined && ` · mine ${(pick.estProb * 100).toFixed(0)}%`}
         </span>
         <EVBadge estProb={pick.estProb} odds={pick.oddsDecimal} />
+        <ClvControl pick={pick} />
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {simple.map((r) => (
@@ -151,11 +193,43 @@ export function PicksList() {
     .sort((a, b) => (b.settledAt ?? '').localeCompare(a.settledAt ?? ''))
 
   const hasPicks = state.picks.length > 0
+  const clv = clvSummary(state.picks)
   const exportBtn =
     'rounded-md border border-neutral-700 px-2.5 py-1 text-xs font-medium text-neutral-300 hover:bg-neutral-800'
 
   return (
     <section className="space-y-4">
+      {clv.n > 0 && (
+        <div className="rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+              Closing Line Value
+            </span>
+            <span className="text-[11px] text-neutral-500">
+              on {clv.n} pick{clv.n === 1 ? '' : 's'} with a closing price
+            </span>
+          </div>
+          <div className="mt-1 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <span
+              className={`text-2xl font-bold tabular-nums ${clv.avgPct >= 0 ? 'text-emerald-400' : 'text-red-400'}`}
+            >
+              {clv.avgPct >= 0 ? '+' : ''}
+              {(clv.avgPct * 100).toFixed(1)}%
+            </span>
+            <span className="text-sm text-neutral-300">
+              avg CLV · beat the close on{' '}
+              <span className="font-semibold text-neutral-100">
+                {clv.beat}/{clv.n}
+              </span>{' '}
+              ({(clv.beatRate * 100).toFixed(0)}%)
+            </span>
+            <span className="text-[11px] text-neutral-500">
+              the realest signal of an edge — consistently positive CLV beats win/loss as proof.
+            </span>
+          </div>
+        </div>
+      )}
+
       {hasPicks && (
         <div className="flex flex-wrap items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-2.5">
           <span className="text-xs text-neutral-400">
@@ -218,6 +292,7 @@ export function PicksList() {
                   <th className="px-3 py-2 font-medium">Stake</th>
                   <th className="px-3 py-2 font-medium">Result</th>
                   <th className="px-3 py-2 text-right font-medium">P/L</th>
+                  <th className="px-3 py-2 font-medium">CLV</th>
                   <th className="px-3 py-2" />
                 </tr>
               </thead>
@@ -247,6 +322,9 @@ export function PicksList() {
                         }`}
                       >
                         {fmtSignedMoney(profit)}
+                      </td>
+                      <td className="px-3 py-2">
+                        <ClvControl pick={p} />
                       </td>
                       <td className="px-3 py-2 text-right">
                         <button

@@ -15,8 +15,10 @@ import { describeError, getStoredKey } from '../lib/ai/anthropic'
 import { matchVerdict, type Verdict, type VerdictInput } from '../lib/ai/verdict'
 import type { PickDraft } from './LogPickForm'
 import { MatchDetail } from './MatchDetail'
+import { MatchContextPanel } from './MatchContextPanel'
 import { ConfidenceChip } from './ConfidenceChip'
 import { confidence1x2, confidenceBinary, type Confidence } from '../lib/confidence'
+import type { ProbBand } from '../lib/uncertainty'
 
 type MarketFilter = 'all' | MarketKind
 
@@ -140,6 +142,7 @@ export function MatchCard({
   onToggle,
   onOdds,
   onLog,
+  band,
 }: {
   a: FixtureAnalysis
   market: MarketFilter
@@ -151,6 +154,7 @@ export function MatchCard({
   onToggle: () => void
   onOdds: (key: string, raw: string) => void
   onLog: (draft: PickDraft) => void
+  band?: ProbBand
 }) {
   const priced = useMemo(
     () => priceFixture(a, illustrative, bookOdds),
@@ -275,7 +279,17 @@ export function MatchCard({
           <div className="mt-0.5 text-sm font-bold leading-snug text-neutral-100">{a.home}</div>
           <div className="text-sm font-bold leading-snug text-neutral-100">{a.away}</div>
           <div className="mt-0.5 text-[10px] text-neutral-500">Neutral venue · Group</div>
-          <ConfidenceChip c={confidence1x2(a.x)} className="mt-1.5" />
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            <ConfidenceChip c={confidence1x2(a.x)} />
+            {band && (
+              <span
+                className="text-[10px] tabular-nums text-neutral-500"
+                title="Bootstrap uncertainty: 1σ spread of the favoured probability across resampled refits. Wider = the model has thinner data on these teams."
+              >
+                ±{(band.sd * 100).toFixed(0)}pp
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex flex-col items-end gap-1">
@@ -337,6 +351,8 @@ export function MatchCard({
           </div>
         ))}
       </div>
+
+      <MatchContextPanel home={a.home} away={a.away} />
 
       {hasRealPrice && (
         <div className="border-t border-neutral-800 px-4 py-3">

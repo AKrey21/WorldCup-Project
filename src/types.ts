@@ -27,6 +27,8 @@ export interface Pick {
   stake: number
   /** User's own probability estimate, 0..1. Optional. */
   estProb?: number
+  /** The market's closing decimal odds, entered after the line settles, for CLV. */
+  closingOdds?: number
   result: PickResult
   /** When the odds snapshot was grabbed off SG Pools (ISO). */
   capturedAt: string
