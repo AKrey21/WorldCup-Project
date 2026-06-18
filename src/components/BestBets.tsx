@@ -13,11 +13,14 @@ import {
 import type { FittedModel } from '../lib/model/fit'
 import { goalEnvironment } from '../lib/recalibration'
 import { getBootstrapModels, probabilityBand, type ProbBand } from '../lib/uncertainty'
+import { computeGroups, standingByTeam } from '../lib/groups'
 import { useLocalStorage } from '../lib/useLocalStorage'
 import type { PickDraft } from './LogPickForm'
 import { OddsImportAI } from './OddsImportAI'
 import { PickOfDay } from './PickOfDay'
 import { MatchCard } from './MatchCard'
+import { GroupStandings } from './GroupStandings'
+import { Collapsible } from './Collapsible'
 import type { OddsItem, OddsMatch } from '../lib/ai/parseOdds'
 
 type MarketFilter = 'all' | MarketKind
@@ -68,6 +71,10 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
       clearTimeout(t)
     }
   }, [model])
+
+  // Live group standings from played results — deterministic context, no model.
+  const groupTables = useMemo(() => computeGroups(), [])
+  const standings = useMemo(() => standingByTeam(groupTables), [groupTables])
 
   // Adaptive goal-environment scale from the games played so far (1 = off).
   const goalEnv = useMemo(() => (model ? goalEnvironment(model) : null), [model])
@@ -347,6 +354,12 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
 
           <OddsImportAI items={aiItems} onApply={applyAiMatches} />
 
+          {groupTables.length > 0 && (
+            <Collapsible title="Group standings">
+              <GroupStandings tables={groupTables} />
+            </Collapsible>
+          )}
+
           {/* Match cards */}
           <div className="space-y-3">
             {cards.length === 0 && (
@@ -368,6 +381,7 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
                 onOdds={setOdds}
                 onLog={onLogToLab}
                 band={bands?.get(a.fixtureId)}
+                standings={standings}
               />
             ))}
           </div>

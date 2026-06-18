@@ -19,6 +19,7 @@ import { MatchContextPanel } from './MatchContextPanel'
 import { ConfidenceChip } from './ConfidenceChip'
 import { confidence1x2, confidenceBinary, type Confidence } from '../lib/confidence'
 import type { ProbBand } from '../lib/uncertainty'
+import type { TeamStanding } from '../lib/groups'
 
 type MarketFilter = 'all' | MarketKind
 
@@ -48,6 +49,24 @@ function pickConfidence(a: FixtureAnalysis, p: PricedSelection): Confidence {
     case 'OddEven':
       return confidenceBinary(a.oe.odd)
   }
+}
+
+function rankSuffix(r: number): string {
+  return r === 1 ? 'st' : r === 2 ? 'nd' : r === 3 ? 'rd' : 'th'
+}
+
+/** A team's live group position — sky for the top-two (advancing) zone. */
+function StandingTag({ s }: { s?: TeamStanding }) {
+  if (!s) return null
+  return (
+    <span
+      className={`ml-1.5 text-[10px] font-normal ${s.rank <= 2 ? 'text-sky-300/80' : 'text-neutral-500'}`}
+      title={`Group ${s.group}: ${s.rank}${rankSuffix(s.rank)} · ${s.pts} pt${s.pts === 1 ? '' : 's'} · ${s.played} played · GD ${s.gd >= 0 ? '+' : ''}${s.gd}`}
+    >
+      {s.rank}
+      {rankSuffix(s.rank)} · {s.pts}p
+    </span>
+  )
 }
 
 function fmtDate(iso: string): string {
@@ -143,6 +162,7 @@ export function MatchCard({
   onOdds,
   onLog,
   band,
+  standings,
 }: {
   a: FixtureAnalysis
   market: MarketFilter
@@ -155,6 +175,7 @@ export function MatchCard({
   onOdds: (key: string, raw: string) => void
   onLog: (draft: PickDraft) => void
   band?: ProbBand
+  standings?: Map<string, TeamStanding>
 }) {
   const priced = useMemo(
     () => priceFixture(a, illustrative, bookOdds),
@@ -276,9 +297,18 @@ export function MatchCard({
           <div className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">
             {fmtDate(a.date)}
           </div>
-          <div className="mt-0.5 text-sm font-bold leading-snug text-neutral-100">{a.home}</div>
-          <div className="text-sm font-bold leading-snug text-neutral-100">{a.away}</div>
-          <div className="mt-0.5 text-[10px] text-neutral-500">Neutral venue · Group</div>
+          <div className="mt-0.5 text-sm font-bold leading-snug text-neutral-100">
+            {a.home}
+            <StandingTag s={standings?.get(a.home)} />
+          </div>
+          <div className="text-sm font-bold leading-snug text-neutral-100">
+            {a.away}
+            <StandingTag s={standings?.get(a.away)} />
+          </div>
+          <div className="mt-0.5 text-[10px] text-neutral-500">
+            {a.neutral ? 'Neutral venue' : 'Home advantage'}
+            {standings?.get(a.home)?.group ? ` · Group ${standings.get(a.home)!.group}` : ''}
+          </div>
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
             <ConfidenceChip c={confidence1x2(a.x)} />
             {band && (

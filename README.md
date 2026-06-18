@@ -40,6 +40,12 @@ Single-user local web app — Vite + React + TypeScript + Tailwind, persisted to
   teams. A per-match **AI context brief** (server-side web search) surfaces
   injuries, suspensions, likely line-ups, form and motivation — the things a
   full-time-goals model is blind to — as *information only*, never a model input.
+
+  A collapsible **Group standings** panel tallies the played fixtures into live
+  tables (top two highlighted), and each match card shows both sides' current
+  group position and points. Deterministic, no API cost — context for stakes and
+  motivation (a must-win side, a dead rubber) that feeds your read and the AI
+  brief, not the model's numbers.
 - **Results** — the model's **out-of-sample report card**. Every World Cup match
   already played is re-run through a model fit *only* on internationals before the
   tournament kicked off (`getPreTournamentModel()`, cutoff 2026-06-11) and
