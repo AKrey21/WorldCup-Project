@@ -10,6 +10,7 @@ import {
   type MarketKind,
 } from '../lib/bestbets'
 import type { FittedModel } from '../lib/model/fit'
+import { goalEnvironment } from '../lib/recalibration'
 import { useLocalStorage } from '../lib/useLocalStorage'
 import type { PickDraft } from './LogPickForm'
 import { OddsImportAI } from './OddsImportAI'
@@ -43,6 +44,7 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
   const [search, setSearch] = useState('')
   const [illustrative, setIllustrative] = useState(false)
   const [upcomingOnly, setUpcomingOnly] = useLocalStorage('wcpp-upcoming-only', true)
+  const [recalibrate, setRecalibrate] = useLocalStorage('wcpp-recalibrate', true)
   // The entered book odds and chosen handicap lines persist across restarts.
   const [bookOdds, setBookOdds] = useLocalStorage<Record<string, number>>('wcpp-book-odds', {})
   const [hcapLines, setHcapLines] = useLocalStorage<Record<string, number>>('wcpp-hcap-lines', {})
@@ -62,13 +64,16 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
     }
   }, [model])
 
+  // Adaptive goal-environment scale from the games played so far (1 = off).
+  const goalEnv = useMemo(() => (model ? goalEnvironment(model) : null), [model])
+
   const board = useMemo(() => {
     if (!model) return null
     const fixtures = loadFixtures()
       .filter((f) => !upcomingOnly || f.date >= TODAY)
       .sort((a, b) => a.date.localeCompare(b.date))
-    return buildBoard(model, fixtures)
-  }, [model, upcomingOnly])
+    return buildBoard(model, fixtures, recalibrate ? (goalEnv?.scale ?? 1) : 1)
+  }, [model, upcomingOnly, goalEnv, recalibrate])
 
   // One entry per fixture, each pre-priced, then filtered and sorted.
   const cards = useMemo(() => {
@@ -172,6 +177,13 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
               <span>
                 Low-score ρ <span className="font-semibold text-white">{model.rho.toFixed(3)}</span>
               </span>
+              {goalEnv && goalEnv.n > 0 && (
+                <span title="Adaptive in-tournament recalibration: forward projections are scaled so the goal-derived markets (BTTS, Over) track the live scoring rate.">
+                  Goal env{' '}
+                  <span className="font-semibold text-white">×{goalEnv.scale.toFixed(2)}</span>{' '}
+                  ({goalEnv.observedGpg.toFixed(2)} vs {goalEnv.expectedGpg.toFixed(2)} gpg)
+                </span>
+              )}
               <span>
                 As of <span className="font-semibold text-white">{model.asOf}</span>
               </span>
@@ -256,9 +268,27 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
               />
               Illustrative book prices
             </label>
+            <label
+              className="flex cursor-pointer items-center gap-2"
+              title="Adaptive in-tournament scale on expected goals so BTTS/Over track the live scoring rate. Shrunk so a small sample can't overcorrect."
+            >
+              <input
+                type="checkbox"
+                checked={recalibrate}
+                onChange={(e) => setRecalibrate(e.target.checked)}
+              />
+              Goal-env recalibration
+              {goalEnv && goalEnv.scale > 1.01 ? ` (×${goalEnv.scale.toFixed(2)})` : ''}
+            </label>
             {illustrative && (
               <span className="rounded-md bg-amber-500/15 px-2 py-0.5 text-amber-300">
                 Demo prices — replace with real SG Pools odds for a true edge.
+              </span>
+            )}
+            {goalEnv && recalibrate && goalEnv.scale > 1.01 && (
+              <span className="rounded-md bg-sky-500/15 px-2 py-0.5 text-sky-300">
+                Projections scaled ×{goalEnv.scale.toFixed(2)} — tournament scoring{' '}
+                {goalEnv.observedGpg.toFixed(2)}/game vs {goalEnv.expectedGpg.toFixed(2)} expected (lifts BTTS &amp; Over).
               </span>
             )}
           </div>

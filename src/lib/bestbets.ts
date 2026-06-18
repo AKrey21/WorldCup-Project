@@ -187,7 +187,7 @@ export interface Board {
  * market. Fixtures with a team the model has never seen are skipped (and
  * reported) rather than guessed at.
  */
-export function buildBoard(model: FittedModel, fixtures: Fixture[]): Board {
+export function buildBoard(model: FittedModel, fixtures: Fixture[], goalScale = 1): Board {
   const analyses = new Map<string, FixtureAnalysis>()
   const candidates: Candidate[] = []
   const skipped: Fixture[] = []
@@ -199,7 +199,11 @@ export function buildBoard(model: FittedModel, fixtures: Fixture[]): Board {
       skipped.push(f)
       continue
     }
-    const sm = scoreMatrix(lam.lh, lam.la, model.rho)
+    // In-tournament goal-environment recalibration (1 = off). Scales both teams'
+    // expected goals so the goal-derived markets track the live scoring rate.
+    const lh = lam.lh * goalScale
+    const la = lam.la * goalScale
+    const sm = scoreMatrix(lh, la, model.rho)
     const x = outcomeProbs(sm)
     const ou = overUnder(sm, TOTAL_LINE)
     const btts = bttsProbs(sm)
@@ -207,7 +211,7 @@ export function buildBoard(model: FittedModel, fixtures: Fixture[]): Board {
     // Extra full-time markets SG Pools offers, read off the same score matrix.
     const oe = oddEvenProbs(sm)
     // Default AH line ≈ the expected goal supremacy, to the nearest 0.25.
-    const hcapDefault = Math.max(-2, Math.min(2, Math.round(-(lam.lh - lam.la) * 4) / 4))
+    const hcapDefault = Math.max(-2, Math.min(2, Math.round(-(lh - la) * 4) / 4))
     const id = fixtureId(f)
     const a: FixtureAnalysis = {
       fixtureId: id,
@@ -215,8 +219,8 @@ export function buildBoard(model: FittedModel, fixtures: Fixture[]): Board {
       home: f.home,
       away: f.away,
       neutral,
-      lh: lam.lh,
-      la: lam.la,
+      lh,
+      la,
       rho: model.rho,
       x,
       ou,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { getPreTournamentModel } from '../lib/bestbets'
 import type { FittedModel } from '../lib/model/fit'
 import {
@@ -8,6 +8,16 @@ import {
   type Outcome,
   type RecapRow,
 } from '../lib/recap'
+import {
+  confidence1x2,
+  confidenceBinary,
+  hitRatesByTier,
+  reliabilityCurve,
+  type CalibrationBin,
+  type ConfidenceTier,
+  type TierStats,
+} from '../lib/confidence'
+import { ConfidenceChip } from './ConfidenceChip'
 
 function pct(x: number, dp = 0): string {
   return `${(x * 100).toFixed(dp)}%`
@@ -58,6 +68,60 @@ export function Results() {
 
   const s = recap.summary
   const beatsUniform = s.meanBrier < s.uniformBrier
+  const calib = [
+    {
+      market: 'Match result (1X2)',
+      stats: hitRatesByTier(recap.rows.map((r) => ({ c: confidence1x2(r.probs), hit: r.outcomeHit }))),
+    },
+    {
+      market: 'Over / Under 2.5',
+      stats: hitRatesByTier(recap.rows.map((r) => ({ c: confidenceBinary(r.pOver), hit: r.ouHit }))),
+    },
+    {
+      market: 'Both teams to score',
+      stats: hitRatesByTier(recap.rows.map((r) => ({ c: confidenceBinary(r.pBttsYes), hit: r.bttsHit }))),
+    },
+  ]
+
+  // Reliability curves: one (probability, did-it-happen) pair per outcome. For the
+  // binary markets we include both sides (Over & Under, Yes & No) so the bins fill
+  // symmetrically — the same treatment as the three 1X2 outcomes.
+  const reliability = [
+    {
+      market: 'Match result (1X2)',
+      bins: reliabilityCurve(
+        recap.rows.flatMap((r) => [
+          { p: r.probs.home, hit: r.actual === 'home' },
+          { p: r.probs.draw, hit: r.actual === 'draw' },
+          { p: r.probs.away, hit: r.actual === 'away' },
+        ]),
+      ),
+    },
+    {
+      market: 'Over / Under 2.5',
+      bins: reliabilityCurve(
+        recap.rows.flatMap((r) => {
+          const over = r.homeScore + r.awayScore > 2.5
+          return [
+            { p: r.pOver, hit: over },
+            { p: 1 - r.pOver, hit: !over },
+          ]
+        }),
+      ),
+    },
+    {
+      market: 'Both teams to score',
+      bins: reliabilityCurve(
+        recap.rows.flatMap((r) => {
+          const btts = r.homeScore > 0 && r.awayScore > 0
+          return [
+            { p: r.pBttsYes, hit: btts },
+            { p: 1 - r.pBttsYes, hit: !btts },
+          ]
+        }),
+      ),
+    },
+  ]
 
   return (
     <section className="space-y-5">
@@ -146,8 +210,18 @@ export function Results() {
         )}
       </p>
 
+      {/* Deep-dive panels — collapsed by default to keep the page short */}
+      <Collapsible title="Confidence — does the colour mean anything?">
+        <ConfidenceCalibration groups={calib} />
+      </Collapsible>
+
+      <Collapsible title="Reliability — predicted vs actual">
+        <ReliabilityPanel groups={reliability} />
+      </Collapsible>
+
       {/* Per-match table */}
-      <div className="overflow-x-auto rounded-xl border border-neutral-800 bg-neutral-900">
+      <Collapsible title="Per-match detail" bodyClass="">
+        <div className="overflow-x-auto">
         <table className="w-full min-w-[720px] text-sm">
           <thead>
             <tr className="border-b border-neutral-800 text-left text-xs uppercase tracking-wide text-neutral-500">
@@ -196,9 +270,10 @@ export function Results() {
                   </div>
                 </td>
                 <td className="px-3 py-2">
-                  <span className="text-neutral-200">
+                  <div className="text-neutral-200">
                     {outcomeLabel(r.modelPick, r.home, r.away)}
-                  </span>
+                  </div>
+                  <ConfidenceChip c={confidence1x2(r.probs)} className="mt-1" />
                 </td>
                 <td className="px-3 py-2 tabular-nums text-xs text-neutral-400">
                   {r.lh.toFixed(1)}–{r.la.toFixed(1)}
@@ -214,14 +289,15 @@ export function Results() {
             ))}
           </tbody>
         </table>
-      </div>
-
-      <p className="text-[11px] leading-snug text-neutral-500">
-        Bold % is the probability the model assigned to the outcome that actually happened. Brier and
-        log-loss reward being confident <span className="italic">and</span> right; a model that hedges
-        everything to 33/33/33 scores the reference values shown above. Results from authoritative
-        per-group tables; kept out of the training data so this stays an honest held-out test.
-      </p>
+        </div>
+        <p className="px-4 py-3 text-[11px] leading-snug text-neutral-500">
+          Bold % is the probability the model assigned to the outcome that actually happened. Brier
+          and log-loss reward being confident <span className="italic">and</span> right; a model that
+          hedges everything to 33/33/33 scores the reference values shown above. Results from
+          authoritative per-group tables; kept out of the training data so this stays an honest
+          held-out test.
+        </p>
+      </Collapsible>
     </section>
   )
 }
@@ -319,6 +395,147 @@ function Compare({ label, model, market }: { label: string; model: number; marke
         <span className="text-[11px] text-neutral-500">book</span>
       </div>
     </div>
+  )
+}
+
+const DOT: Record<ConfidenceTier, string> = {
+  clear: 'bg-sky-400',
+  lean: 'bg-neutral-400',
+  tossup: 'bg-amber-400',
+}
+
+function ConfidenceCalibration({ groups }: { groups: { market: string; stats: TierStats[] }[] }) {
+  return (
+    <>
+      <p className="max-w-2xl text-[11px] leading-snug text-neutral-500">
+        Hit rate split by how decisive the model's read was, per market. If the colours are{' '}
+        <span className="italic">earned</span>, a “clear” read should out-hit a “tossup”, and each
+        bucket should land near the probability the model claimed (impl).
+      </p>
+      <div className="mt-3 space-y-3">
+        {groups.map((g) => (
+          <div key={g.market}>
+            <div className="mb-1.5 text-[11px] font-medium text-neutral-300">{g.market}</div>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {g.stats.map((t) => (
+                <div
+                  key={t.tier}
+                  className="rounded-lg border border-neutral-800 bg-neutral-900/60 px-3 py-2"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className={`h-2 w-2 rounded-full ${DOT[t.tier]}`} aria-hidden />
+                    <span className="text-xs font-medium text-neutral-200">{t.label}</span>
+                    <span className="ml-auto text-[10px] text-neutral-500">{t.n}g</span>
+                  </div>
+                  {t.n > 0 ? (
+                    <div className="mt-1 flex items-baseline gap-1.5 tabular-nums">
+                      <span className="text-base font-semibold text-neutral-100">{pct(t.hitRate)}</span>
+                      <span className="text-[10px] text-neutral-500">
+                        hit ({t.hits}/{t.n})
+                      </span>
+                      <span className="ml-auto text-[10px] text-neutral-500">impl ~{pct(t.meanTop)}</span>
+                    </div>
+                  ) : (
+                    <div className="mt-1 text-xs text-neutral-600">—</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-[11px] leading-snug text-neutral-500">
+        Tiny samples this early — directional only. A “tossup” landing near a coin-flip is the{' '}
+        <span className="italic">point</span>. Confidence is a separate axis from value: the best
+        price is often on a tossup, and a “clear” read that under-hits its implied number means the
+        model is overconfident there, not that the bet is bad.
+      </p>
+    </>
+  )
+}
+
+function ReliabilityPanel({ groups }: { groups: { market: string; bins: CalibrationBin[] }[] }) {
+  return (
+    <>
+      <p className="max-w-2xl text-[11px] leading-snug text-neutral-500">
+        Every forecast bucketed by the probability it carried. A calibrated model lands{' '}
+        <span className="italic">on the diagonal</span> — when it says 60%, those happen ~60% of the
+        time. Bar = how often it actually happened; the light tick = what the model predicted.
+      </p>
+      <div className="mt-3 space-y-3">
+        {groups.map((g) => (
+          <div key={g.market}>
+            <div className="mb-1.5 text-[11px] font-medium text-neutral-300">{g.market}</div>
+            <div className="space-y-2">
+              {g.bins
+                .filter((b) => b.n > 0)
+                .map((b) => {
+                  const diff = b.observed - b.predicted
+                  const tone =
+                    Math.abs(diff) <= 0.08
+                      ? 'text-emerald-400'
+                      : diff < 0
+                        ? 'text-amber-400'
+                        : 'text-sky-400'
+                  return (
+                    <div key={b.label} className="flex items-center gap-2 text-xs">
+                      <span className="w-14 shrink-0 tabular-nums text-neutral-500">{b.label}</span>
+                      <div className="relative h-3 flex-1 overflow-hidden rounded bg-neutral-800">
+                        <div
+                          className="absolute inset-y-0 left-0 rounded bg-neutral-600"
+                          style={{ width: `${Math.min(100, b.observed * 100)}%` }}
+                        />
+                        <div
+                          className="absolute inset-y-0 w-0.5 bg-neutral-200"
+                          style={{ left: `${Math.min(100, b.predicted * 100)}%` }}
+                          title={`predicted ${(b.predicted * 100).toFixed(0)}%`}
+                        />
+                      </div>
+                      <span className={`w-24 shrink-0 text-right tabular-nums ${tone}`}>
+                        {(b.observed * 100).toFixed(0)}% / {(b.predicted * 100).toFixed(0)}%
+                      </span>
+                      <span className="w-9 shrink-0 text-right tabular-nums text-neutral-600">
+                        n={b.n}
+                      </span>
+                    </div>
+                  )
+                })}
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-[11px] leading-snug text-neutral-500">
+        obs / pred = how often it happened vs what the model said. Tiny per-bin samples this early —
+        read the shape, not any single bar.
+      </p>
+    </>
+  )
+}
+
+function Collapsible({
+  title,
+  defaultOpen = false,
+  bodyClass = 'px-4 py-4',
+  children,
+}: {
+  title: string
+  defaultOpen?: boolean
+  bodyClass?: string
+  children: ReactNode
+}) {
+  return (
+    <details
+      open={defaultOpen}
+      className="group rounded-xl border border-neutral-800 bg-neutral-900"
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 [&::-webkit-details-marker]:hidden">
+        <span>{title}</span>
+        <span className="text-neutral-500 transition-transform group-open:rotate-180" aria-hidden>
+          ⌄
+        </span>
+      </summary>
+      <div className={`border-t border-neutral-800 ${bodyClass}`}>{children}</div>
+    </details>
   )
 }
 

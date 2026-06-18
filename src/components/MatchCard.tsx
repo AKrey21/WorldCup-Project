@@ -15,6 +15,8 @@ import { describeError, getStoredKey } from '../lib/ai/anthropic'
 import { matchVerdict, type Verdict, type VerdictInput } from '../lib/ai/verdict'
 import type { PickDraft } from './LogPickForm'
 import { MatchDetail } from './MatchDetail'
+import { ConfidenceChip } from './ConfidenceChip'
+import { confidence1x2, confidenceBinary, type Confidence } from '../lib/confidence'
 
 type MarketFilter = 'all' | MarketKind
 
@@ -30,6 +32,20 @@ function pct(x: number, dp = 0): string {
 
 function signedPct(x: number, dp = 1): string {
   return `${x >= 0 ? '+' : ''}${(x * 100).toFixed(dp)}%`
+}
+
+/** Confidence of a surfaced pick, read in its own market. */
+function pickConfidence(a: FixtureAnalysis, p: PricedSelection): Confidence {
+  switch (p.marketKind) {
+    case '1X2':
+      return confidence1x2(a.x)
+    case 'Total':
+      return confidenceBinary(a.ou.over)
+    case 'BTTS':
+      return confidenceBinary(a.btts.yes)
+    case 'OddEven':
+      return confidenceBinary(a.oe.odd)
+  }
 }
 
 function fmtDate(iso: string): string {
@@ -259,27 +275,31 @@ export function MatchCard({
           <div className="mt-0.5 text-sm font-bold leading-snug text-neutral-100">{a.home}</div>
           <div className="text-sm font-bold leading-snug text-neutral-100">{a.away}</div>
           <div className="mt-0.5 text-[10px] text-neutral-500">Neutral venue · Group</div>
+          <ConfidenceChip c={confidence1x2(a.x)} className="mt-1.5" />
         </div>
         <div className="flex items-center gap-3">
-          {showBest ? (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                onLog(draftFor(bestBet!))
-              }}
-              className="rounded-md bg-emerald-500/15 px-2 py-1 text-right text-[11px] font-semibold text-emerald-300 hover:bg-emerald-500/25"
-              title="Log the best bet"
-            >
-              <span className="block">Best: {bestBet!.label}</span>
-              <span className="block tabular-nums">{signedPct(bestBet!.edge!)} edge</span>
-            </button>
-          ) : (
-            <span className="rounded-md bg-neutral-800 px-2 py-1 text-right text-[11px] text-neutral-400">
-              <span className="block">Top: {topPick.label}</span>
-              <span className="block tabular-nums">{pct(topPick.modelProb)}</span>
-            </span>
-          )}
+          <div className="flex flex-col items-end gap-1">
+            {showBest ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onLog(draftFor(bestBet!))
+                }}
+                className="rounded-md bg-emerald-500/15 px-2 py-1 text-right text-[11px] font-semibold text-emerald-300 hover:bg-emerald-500/25"
+                title="Log the best bet"
+              >
+                <span className="block">Best: {bestBet!.label}</span>
+                <span className="block tabular-nums">{signedPct(bestBet!.edge!)} edge</span>
+              </button>
+            ) : (
+              <span className="rounded-md bg-neutral-800 px-2 py-1 text-right text-[11px] text-neutral-400">
+                <span className="block">Top: {topPick.label}</span>
+                <span className="block tabular-nums">{pct(topPick.modelProb)}</span>
+              </span>
+            )}
+            <ConfidenceChip c={pickConfidence(a, showBest ? bestBet! : topPick)} />
+          </div>
           <span
             className={`text-neutral-500 transition-transform ${open ? 'rotate-180' : ''}`}
             aria-hidden
@@ -292,8 +312,12 @@ export function MatchCard({
       <div className="grid grid-cols-1 gap-x-6 gap-y-3 px-4 py-3 sm:grid-cols-2 lg:grid-cols-3">
         {blocks.map((blk) => (
           <div key={blk.kind}>
-            <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
-              {blk.title}
+            <div className="mb-1 flex items-center gap-2">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+                {blk.title}
+              </span>
+              {blk.kind === 'Total' && <ConfidenceChip c={confidenceBinary(a.ou.over)} />}
+              {blk.kind === 'BTTS' && <ConfidenceChip c={confidenceBinary(a.btts.yes)} />}
             </div>
             <div className="space-y-0.5">
               {priced
