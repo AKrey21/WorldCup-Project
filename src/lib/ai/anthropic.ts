@@ -14,6 +14,23 @@ const KEY_STORAGE = 'wcpp-anthropic-key'
  *  varied paste formats to the right fixtures without extended thinking. */
 export const ODDS_PARSER_MODEL = 'claude-opus-4-8'
 
+// A tiny pub/sub so every part of the UI that shows the key (the header field,
+// the paste-import panel) reacts the moment it is saved or forgotten anywhere —
+// no prop-drilling, and it also catches edits made in another browser tab.
+const keyListeners = new Set<() => void>()
+
+export function subscribeKey(cb: () => void): () => void {
+  keyListeners.add(cb)
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === KEY_STORAGE) cb()
+  }
+  window.addEventListener('storage', onStorage)
+  return () => {
+    keyListeners.delete(cb)
+    window.removeEventListener('storage', onStorage)
+  }
+}
+
 export function getStoredKey(): string {
   try {
     return localStorage.getItem(KEY_STORAGE) ?? ''
@@ -29,6 +46,7 @@ export function setStoredKey(key: string): void {
   } catch {
     /* localStorage unavailable — nothing to persist */
   }
+  keyListeners.forEach((l) => l())
 }
 
 export function makeClient(apiKey: string): Anthropic {

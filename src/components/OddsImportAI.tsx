@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { describeError, getStoredKey, setStoredKey } from '../lib/ai/anthropic'
+import { describeError, setStoredKey } from '../lib/ai/anthropic'
+import { useApiKey } from '../lib/ai/useApiKey'
 import { parseOddsWithAI, type OddsItem, type OddsMatch, type ParseResult } from '../lib/ai/parseOdds'
 
 export function OddsImportAI({
@@ -10,7 +11,7 @@ export function OddsImportAI({
   onApply: (matches: OddsMatch[]) => void
 }) {
   const [open, setOpen] = useState(false)
-  const [apiKey, setApiKey] = useState(() => getStoredKey())
+  const apiKey = useApiKey()
   const [keyDraft, setKeyDraft] = useState('')
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
@@ -23,14 +24,12 @@ export function OddsImportAI({
     const k = keyDraft.trim()
     if (!k) return
     setStoredKey(k)
-    setApiKey(k)
     setKeyDraft('')
     setError(null)
   }
 
   function forgetKey() {
     setStoredKey('')
-    setApiKey('')
     setResult(null)
   }
 

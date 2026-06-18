@@ -13,6 +13,7 @@ import type { FittedModel } from '../lib/model/fit'
 import { useLocalStorage } from '../lib/useLocalStorage'
 import type { PickDraft } from './LogPickForm'
 import { OddsImportAI } from './OddsImportAI'
+import { PickOfDay } from './PickOfDay'
 import { MatchCard } from './MatchCard'
 import type { OddsItem, OddsMatch } from '../lib/ai/parseOdds'
 
@@ -261,6 +262,12 @@ export function BestBets({ onLogToLab }: { onLogToLab: (draft: PickDraft) => voi
               </span>
             )}
           </div>
+
+          <PickOfDay
+            analyses={[...board.analyses.values()]}
+            illustrative={illustrative}
+            bookOdds={bookOdds}
+          />
 
           <OddsImportAI items={aiItems} onApply={applyAiMatches} />
 

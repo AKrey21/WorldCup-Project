@@ -192,7 +192,7 @@ export function MatchCard({
   async function runVerdict() {
     const apiKey = getStoredKey()
     if (!apiKey) {
-      setVError('Add your Anthropic API key in the “Auto-fill book odds” panel above first.')
+      setVError('Add your Anthropic API key first — use the “API key” button in the header.')
       return
     }
     setVBusy(true)

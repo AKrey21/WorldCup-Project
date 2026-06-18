@@ -9,6 +9,7 @@ import {
   settleAH,
 } from '../lib/settlement'
 import { fmtDateTime, fmtMoney, fmtSignedMoney } from '../lib/format'
+import { downloadFile, exportFilename, picksToCsv, stateToJson } from '../lib/export'
 import { EVBadge } from './EVBadge'
 
 const RESULT_LABEL: Record<PickResult, string> = {
@@ -149,8 +150,39 @@ export function PicksList() {
     .filter((p) => p.result !== 'pending')
     .sort((a, b) => (b.settledAt ?? '').localeCompare(a.settledAt ?? ''))
 
+  const hasPicks = state.picks.length > 0
+  const exportBtn =
+    'rounded-md border border-neutral-700 px-2.5 py-1 text-xs font-medium text-neutral-300 hover:bg-neutral-800'
+
   return (
     <section className="space-y-4">
+      {hasPicks && (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-2.5">
+          <span className="text-xs text-neutral-400">
+            Export your picks-vs-odds dataset ({state.picks.length} pick
+            {state.picks.length === 1 ? '' : 's'}):
+          </span>
+          <button
+            type="button"
+            className={exportBtn}
+            onClick={() =>
+              downloadFile(exportFilename('csv'), picksToCsv(state), 'text/csv;charset=utf-8')
+            }
+          >
+            Download CSV
+          </button>
+          <button
+            type="button"
+            className={exportBtn}
+            onClick={() =>
+              downloadFile(exportFilename('json'), stateToJson(state), 'application/json')
+            }
+          >
+            Download JSON
+          </button>
+        </div>
+      )}
+
       <div>
         <h2 className="mb-2 text-base font-semibold">
           Pending picks{pending.length > 0 && ` (${pending.length})`}

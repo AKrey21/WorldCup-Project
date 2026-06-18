@@ -1,12 +1,14 @@
 import { useRef, useState } from 'react'
 import { BestBets } from './components/BestBets'
+import { Results } from './components/Results'
 import { Dashboard } from './components/Dashboard'
 import { LogPickForm, type PickDraft } from './components/LogPickForm'
 import { PasteImport } from './components/PasteImport'
 import { PicksList } from './components/PicksList'
 import { BankrollCard } from './components/BankrollCard'
+import { ApiKeySettings } from './components/ApiKeySettings'
 
-type Tab = 'bets' | 'lab'
+type Tab = 'bets' | 'results' | 'lab'
 
 function App() {
   const [tab, setTab] = useState<Tab>('bets')
@@ -40,19 +42,27 @@ function App() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
       <header className="mb-6">
-        <div className="flex flex-wrap items-baseline gap-2">
-          <h1 className="text-2xl font-bold tracking-tight">World Cup Prop Predictor</h1>
-          <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-emerald-300">
-            Model + paper trading
-          </span>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div>
+            <div className="flex flex-wrap items-baseline gap-2">
+              <h1 className="text-2xl font-bold tracking-tight">World Cup Prop Predictor</h1>
+              <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-emerald-300">
+                Model + paper trading
+              </span>
+            </div>
+            <p className="mt-1 text-sm text-neutral-400">
+              A Dixon-Coles model finds the edges; a paper bankroll measures whether you actually
+              have one.
+            </p>
+          </div>
+          <ApiKeySettings />
         </div>
-        <p className="mt-1 text-sm text-neutral-400">
-          A Dixon-Coles model finds the edges; a paper bankroll measures whether you actually have
-          one.
-        </p>
         <nav className="mt-4 inline-flex gap-1 rounded-xl border border-neutral-800 bg-neutral-900 p-1">
           <button type="button" className={tabCls('bets')} onClick={() => setTab('bets')}>
             Best Bets
+          </button>
+          <button type="button" className={tabCls('results')} onClick={() => setTab('results')}>
+            Results
           </button>
           <button type="button" className={tabCls('lab')} onClick={() => setTab('lab')}>
             My Lab
@@ -63,6 +73,8 @@ function App() {
       <main>
         {tab === 'bets' ? (
           <BestBets onLogToLab={logFromBestBets} />
+        ) : tab === 'results' ? (
+          <Results />
         ) : (
           <div className="space-y-6">
             <Dashboard />

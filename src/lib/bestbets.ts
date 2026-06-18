@@ -122,6 +122,25 @@ export function getModel(): FittedModel {
   return cachedModel
 }
 
+// Kick-off of the 2026 World Cup. The upstream results feed already carries some
+// of the tournament's own games, so a model fit on everything would be grading
+// itself on matches it trained on. The Results recap therefore uses a model fit
+// only on matches *before* this date — a genuine held-out test. The forward board
+// keeps using the full model: it predicts later fixtures, so recent WC results are
+// legitimate form, not leakage.
+export const TOURNAMENT_START = '2026-06-11'
+
+let cachedPreTournamentModel: FittedModel | null = null
+
+/** Model fit only on internationals played before the World Cup kicked off. */
+export function getPreTournamentModel(): FittedModel {
+  if (!cachedPreTournamentModel) {
+    const pre = loadHistoricalMatches().filter((m) => m.date < TOURNAMENT_START)
+    cachedPreTournamentModel = fitDixonColes(pre)
+  }
+  return cachedPreTournamentModel
+}
+
 // ---------------------------------------------------------------------------
 // Board construction
 // ---------------------------------------------------------------------------

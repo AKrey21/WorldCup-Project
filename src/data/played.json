@@ -1,0 +1,32 @@
+{
+  "source": "Wikipedia — 2026 FIFA World Cup group pages (Groups A–L)",
+  "note": "Matchday-1 results, cross-checked against per-group Wikipedia tables. Host nations (Mexico, Canada, United States) are not on neutral ground; all other games are neutral. Scored by getPreTournamentModel() — a fit on internationals before 2026-06-11 — so the recap is a true held-out test even though the upstream results feed already carries some of these games.",
+  "oddsNote": "Optional `odds` = best-available pre-match 1X2 decimal prices (home/draw/away) for the model-vs-market benchmark. Sources: article fetches (England–Croatia from ESPN; Iran–NZ, Spain–Cape Verde, Belgium–Egypt from CBS/Racing Post/SportsLine) and FanDuel prices quoted in match previews (Argentina, France, Brazil, USA, Germany, Netherlands). Mixed books and capture times — approximate, not synchronised closing lines. The benchmark de-vigs each set; matches without odds are excluded from the market comparison.",
+  "asOf": "2026-06-18",
+  "matches": [
+    { "date": "2026-06-11", "home": "Mexico", "away": "South Africa", "homeScore": 2, "awayScore": 0, "neutral": 0, "group": "A" },
+    { "date": "2026-06-11", "home": "South Korea", "away": "Czech Republic", "homeScore": 2, "awayScore": 1, "neutral": 1, "group": "A" },
+    { "date": "2026-06-12", "home": "Canada", "away": "Bosnia and Herzegovina", "homeScore": 1, "awayScore": 1, "neutral": 0, "group": "B" },
+    { "date": "2026-06-12", "home": "United States", "away": "Paraguay", "homeScore": 4, "awayScore": 1, "neutral": 0, "group": "D", "odds": { "home": 2.05, "draw": 3.10, "away": 4.00 } },
+    { "date": "2026-06-13", "home": "Qatar", "away": "Switzerland", "homeScore": 1, "awayScore": 1, "neutral": 1, "group": "B" },
+    { "date": "2026-06-13", "home": "Brazil", "away": "Morocco", "homeScore": 1, "awayScore": 1, "neutral": 1, "group": "C", "odds": { "home": 1.67, "draw": 3.70, "away": 5.70 } },
+    { "date": "2026-06-13", "home": "Haiti", "away": "Scotland", "homeScore": 0, "awayScore": 1, "neutral": 1, "group": "C" },
+    { "date": "2026-06-13", "home": "Australia", "away": "Turkey", "homeScore": 2, "awayScore": 0, "neutral": 1, "group": "D" },
+    { "date": "2026-06-14", "home": "Germany", "away": "Curaçao", "homeScore": 7, "awayScore": 1, "neutral": 1, "group": "E", "odds": { "home": 1.05, "draw": 20.0, "away": 41.0 } },
+    { "date": "2026-06-14", "home": "Ivory Coast", "away": "Ecuador", "homeScore": 1, "awayScore": 0, "neutral": 1, "group": "E" },
+    { "date": "2026-06-14", "home": "Netherlands", "away": "Japan", "homeScore": 2, "awayScore": 2, "neutral": 1, "group": "F", "odds": { "home": 2.03, "draw": 3.40, "away": 3.70 } },
+    { "date": "2026-06-14", "home": "Sweden", "away": "Tunisia", "homeScore": 5, "awayScore": 1, "neutral": 1, "group": "F" },
+    { "date": "2026-06-15", "home": "Belgium", "away": "Egypt", "homeScore": 1, "awayScore": 1, "neutral": 1, "group": "G", "odds": { "home": 1.57, "draw": 4.00, "away": 6.00 } },
+    { "date": "2026-06-15", "home": "Iran", "away": "New Zealand", "homeScore": 2, "awayScore": 2, "neutral": 1, "group": "G", "odds": { "home": 1.77, "draw": 3.40, "away": 5.00 } },
+    { "date": "2026-06-15", "home": "Spain", "away": "Cape Verde", "homeScore": 0, "awayScore": 0, "neutral": 1, "group": "H", "odds": { "home": 1.06, "draw": 13.0, "away": 23.0 } },
+    { "date": "2026-06-15", "home": "Saudi Arabia", "away": "Uruguay", "homeScore": 1, "awayScore": 1, "neutral": 1, "group": "H" },
+    { "date": "2026-06-16", "home": "France", "away": "Senegal", "homeScore": 3, "awayScore": 1, "neutral": 1, "group": "I", "odds": { "home": 1.45, "draw": 4.50, "away": 7.00 } },
+    { "date": "2026-06-16", "home": "Iraq", "away": "Norway", "homeScore": 1, "awayScore": 4, "neutral": 1, "group": "I" },
+    { "date": "2026-06-16", "home": "Argentina", "away": "Algeria", "homeScore": 3, "awayScore": 0, "neutral": 1, "group": "J", "odds": { "home": 1.44, "draw": 4.60, "away": 7.25 } },
+    { "date": "2026-06-16", "home": "Austria", "away": "Jordan", "homeScore": 3, "awayScore": 1, "neutral": 1, "group": "J" },
+    { "date": "2026-06-17", "home": "Portugal", "away": "DR Congo", "homeScore": 1, "awayScore": 1, "neutral": 1, "group": "K" },
+    { "date": "2026-06-17", "home": "Uzbekistan", "away": "Colombia", "homeScore": 1, "awayScore": 3, "neutral": 1, "group": "K" },
+    { "date": "2026-06-17", "home": "England", "away": "Croatia", "homeScore": 4, "awayScore": 2, "neutral": 1, "group": "L", "odds": { "home": 1.69, "draw": 3.75, "away": 5.25 } },
+    { "date": "2026-06-17", "home": "Ghana", "away": "Panama", "homeScore": 1, "awayScore": 0, "neutral": 1, "group": "L" }
+  ]
+}

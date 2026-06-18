@@ -5,7 +5,7 @@ the edges; a paper bankroll measures whether you **actually** have one. It is a
 measurement tool, not a money machine.
 
 Single-user local web app — Vite + React + TypeScript + Tailwind, persisted to
-`localStorage`, no backend. Two tabs:
+`localStorage`, no backend. Three tabs:
 
 - **Best Bets** — every fixture run through a Dixon-Coles scoreline model fit on
   ~11,900 real international results. For each match the model surfaces its
@@ -18,12 +18,43 @@ Single-user local web app — Vite + React + TypeScript + Tailwind, persisted to
   Book prices go in by hand, or via **Auto-fill book odds from a paste** — an
   AI importer that takes any messy odds block (abbreviations, fractional or
   American prices, reordered columns) and maps each price to the right fixture
-  and market with Claude (`claude-opus-4-8`), then fills the matched cells. It
-  needs your own Anthropic API key, stored only in this browser's `localStorage`
-  and sent directly to `api.anthropic.com` when you click Match — never
-  anywhere else, and only on that explicit action.
+  and market with Claude (`claude-opus-4-8`), then fills the matched cells.
+
+  **Pick of the Day** — a World Cup day has several kick-offs at once, so this
+  ranks the whole day's slate into the best one-to-three disciplined value bets,
+  each with a rationale. Optionally it first runs **web research**: Claude's
+  server-side `web_search` tool looks up injuries, likely line-ups, form and
+  motivation for that day's fixtures and folds the news into the read (the model
+  stays the spine — news adjusts, it doesn't override). The search runs on
+  Anthropic's servers, so this static, backend-less app gets live news with no
+  scraper and no CORS proxy; it uses the billable web-search add-on, so it's an
+  opt-in toggle.
+- **Results** — the model's **out-of-sample report card**. Every World Cup match
+  already played is re-run through a model fit *only* on internationals before the
+  tournament kicked off (`getPreTournamentModel()`, cutoff 2026-06-11) and
+  compared to what actually happened: 1X2 / over-under / both-teams-to-score hit
+  rates, plus **Brier score** and **log-loss** against an uninformed 1/3-1/3-1/3
+  baseline. A genuine held-out calibration check, not a backfit — the dedicated
+  pre-tournament fit guarantees the model never trained on the games it is graded
+  on, even though the upstream results feed already carries some of them.
+
+  The headline is **Model vs the market**: for the games that carry a pre-match
+  book price (`odds` in [`played.json`](src/data/played.json)), the line is
+  de-vigged into the book's own probabilities and scored the same way, and a
+  **Brier Skill Score** (`1 − model_Brier / market_Brier`) says whether the model
+  out-predicts the bookmaker — the benchmark that actually answers "are we beating
+  the odds?". Beating a coin-flip is trivial; beating the market is the real test,
+  and near-parity is a respectable result for a simple full-time-goals model.
 - **My Lab** — the paper-trading bankroll, manual pick logging, SG Pools
-  paste-import, settlement and the equity dashboard described below.
+  paste-import, settlement, the equity dashboard described below, and a one-click
+  **CSV / JSON export** of your full picks-vs-odds dataset.
+
+The AI features (paste importer, per-match verdict) need your own Anthropic API
+key. Set it once via the **API key** button in the header; it is stored only in
+this browser's `localStorage` and sent directly to `api.anthropic.com` on the
+actions that use it — never anywhere else. On a public deploy (e.g. GitHub Pages)
+use a dedicated, spend-capped key you can revoke. The board and tracker work
+fully without a key.
 
 ## MVP (Phase 1) — what's here
 
@@ -73,14 +104,25 @@ One-time setup for the live site: in the repo, **Settings → Pages → Build an
 deployment → Source: GitHub Actions**. The site then deploys to
 `https://<owner>.github.io/WorldCup-Project/`.
 
+## Played-results data
+
+The **Results** tab reads [`src/data/played.json`](src/data/played.json) — the
+matchday-1 scorelines, taken from the authoritative per-group Wikipedia tables
+and cross-checked. The honest part of the recap is the *model*, not the data file:
+the upstream results feed in `results.json` already contains some 2026 World Cup
+games, so the recap scores everything with `getPreTournamentModel()` — a fit
+restricted to matches before 2026-06-11 — which is guaranteed never to have seen
+the games it grades. Append new rows to `played.json` to extend the report card.
+
 ## Roadmap
 
 - **Phase 2 (after the tournament):** prediction pipeline — data adapter,
-  Dixon-Coles/Poisson + LightGBM, **backtest harness** (the referee),
-  calibration checks, then Kelly staking as an advisory card only.
+  Dixon-Coles/Poisson + LightGBM, a full **backtest harness** (the Results tab is
+  the first slice of this referee), deeper calibration plots, then Kelly staking
+  as an advisory card only.
 - **Phase 3 (optional):** news context as an informational dashboard widget —
   never a model input.
 
 This World Cup is the data-collection run: paper-trade your own reads, capture
-closing odds via the parser, and finish with a clean picks-vs-odds dataset to
-backtest against.
+closing odds via the parser, and **export** (My Lab → Download CSV/JSON) a clean
+picks-vs-odds dataset to backtest against.
