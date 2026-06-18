@@ -1,0 +1,425 @@
+{
+  "source": "https://raw.githubusercontent.com/martj42/international_results/master/results.csv",
+  "fixtures": [
+    {
+      "date": "2026-06-15",
+      "home": "Belgium",
+      "away": "Egypt",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-15",
+      "home": "Iran",
+      "away": "New Zealand",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-15",
+      "home": "Spain",
+      "away": "Cape Verde",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-15",
+      "home": "Saudi Arabia",
+      "away": "Uruguay",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-16",
+      "home": "France",
+      "away": "Senegal",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-16",
+      "home": "Iraq",
+      "away": "Norway",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-16",
+      "home": "Argentina",
+      "away": "Algeria",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-16",
+      "home": "Austria",
+      "away": "Jordan",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-17",
+      "home": "Portugal",
+      "away": "DR Congo",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-17",
+      "home": "Uzbekistan",
+      "away": "Colombia",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-17",
+      "home": "England",
+      "away": "Croatia",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-17",
+      "home": "Ghana",
+      "away": "Panama",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-18",
+      "home": "Czech Republic",
+      "away": "South Africa",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-18",
+      "home": "Mexico",
+      "away": "South Korea",
+      "neutral": 0,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-18",
+      "home": "Switzerland",
+      "away": "Bosnia and Herzegovina",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-18",
+      "home": "Canada",
+      "away": "Qatar",
+      "neutral": 0,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-19",
+      "home": "Scotland",
+      "away": "Morocco",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-19",
+      "home": "Brazil",
+      "away": "Haiti",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-19",
+      "home": "United States",
+      "away": "Australia",
+      "neutral": 0,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-19",
+      "home": "Turkey",
+      "away": "Paraguay",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-20",
+      "home": "Germany",
+      "away": "Ivory Coast",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-20",
+      "home": "Ecuador",
+      "away": "Curaçao",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-20",
+      "home": "Netherlands",
+      "away": "Sweden",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-20",
+      "home": "Tunisia",
+      "away": "Japan",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-21",
+      "home": "Belgium",
+      "away": "Iran",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-21",
+      "home": "New Zealand",
+      "away": "Egypt",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-21",
+      "home": "Spain",
+      "away": "Saudi Arabia",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-21",
+      "home": "Uruguay",
+      "away": "Cape Verde",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-22",
+      "home": "France",
+      "away": "Iraq",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-22",
+      "home": "Norway",
+      "away": "Senegal",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-22",
+      "home": "Argentina",
+      "away": "Austria",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-22",
+      "home": "Jordan",
+      "away": "Algeria",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-23",
+      "home": "Portugal",
+      "away": "Uzbekistan",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-23",
+      "home": "Colombia",
+      "away": "DR Congo",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-23",
+      "home": "England",
+      "away": "Ghana",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-23",
+      "home": "Panama",
+      "away": "Croatia",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-24",
+      "home": "Mexico",
+      "away": "Czech Republic",
+      "neutral": 0,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-24",
+      "home": "South Africa",
+      "away": "South Korea",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-24",
+      "home": "Canada",
+      "away": "Switzerland",
+      "neutral": 0,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-24",
+      "home": "Bosnia and Herzegovina",
+      "away": "Qatar",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-24",
+      "home": "Scotland",
+      "away": "Brazil",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-24",
+      "home": "Morocco",
+      "away": "Haiti",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-25",
+      "home": "United States",
+      "away": "Turkey",
+      "neutral": 0,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-25",
+      "home": "Paraguay",
+      "away": "Australia",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-25",
+      "home": "Curaçao",
+      "away": "Ivory Coast",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-25",
+      "home": "Ecuador",
+      "away": "Germany",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-25",
+      "home": "Japan",
+      "away": "Sweden",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-25",
+      "home": "Tunisia",
+      "away": "Netherlands",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-26",
+      "home": "Egypt",
+      "away": "Iran",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-26",
+      "home": "New Zealand",
+      "away": "Belgium",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-26",
+      "home": "Cape Verde",
+      "away": "Saudi Arabia",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-26",
+      "home": "Uruguay",
+      "away": "Spain",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-26",
+      "home": "Norway",
+      "away": "France",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-26",
+      "home": "Senegal",
+      "away": "Iraq",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-27",
+      "home": "Algeria",
+      "away": "Austria",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-27",
+      "home": "Jordan",
+      "away": "Argentina",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-27",
+      "home": "Colombia",
+      "away": "Portugal",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-27",
+      "home": "DR Congo",
+      "away": "Uzbekistan",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-27",
+      "home": "Panama",
+      "away": "England",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    },
+    {
+      "date": "2026-06-27",
+      "home": "Croatia",
+      "away": "Ghana",
+      "neutral": 1,
+      "tournament": "FIFA World Cup"
+    }
+  ]
+}

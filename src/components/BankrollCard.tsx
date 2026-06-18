@@ -25,7 +25,7 @@ export function BankrollCard() {
   }
 
   return (
-    <section className="rounded-2xl border border-neutral-200 bg-white p-5">
+    <section className="rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
       <h2 className="text-base font-semibold">Bankroll</h2>
       <p className="mt-1 text-xs leading-snug text-neutral-500">
         One recycling pot of paper money — a hard cap, not 104 parallel bets. Currently{' '}
@@ -33,7 +33,7 @@ export function BankrollCard() {
       </p>
       <div className="mt-3 flex gap-2">
         <input
-          className="w-32 rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
+          className="w-32 rounded-lg border border-neutral-700 bg-neutral-800 text-neutral-100 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
           type="number"
           min="1"
           step="1"
@@ -45,14 +45,14 @@ export function BankrollCard() {
         <button
           type="button"
           onClick={save}
-          className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white"
+          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
         >
           Set
         </button>
         <button
           type="button"
           onClick={resetAll}
-          className="ml-auto rounded-lg px-3 py-2 text-sm font-medium text-red-600"
+          className="ml-auto rounded-lg px-3 py-2 text-sm font-medium text-red-400"
         >
           Reset all data
         </button>

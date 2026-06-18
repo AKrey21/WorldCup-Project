@@ -25,12 +25,12 @@ function resultChipCls(result: PickResult): string {
   switch (result) {
     case 'win':
     case 'half-win':
-      return 'bg-green-100 text-green-800'
+      return 'bg-emerald-500/15 text-emerald-300'
     case 'loss':
     case 'half-loss':
-      return 'bg-red-100 text-red-700'
+      return 'bg-red-500/15 text-red-300'
     default:
-      return 'bg-neutral-100 text-neutral-600'
+      return 'bg-neutral-800 text-neutral-300'
   }
 }
 
@@ -48,10 +48,10 @@ function ScoreSettle({ pick, onSettle }: { pick: Pick; onSettle: (r: PickResult)
   const o = parseInt(opp, 10)
   const ready = Number.isInteger(b) && Number.isInteger(o) && b >= 0 && o >= 0
   const inputCls =
-    'w-14 rounded-md border border-neutral-300 px-2 py-1 text-center text-sm focus:border-neutral-500 focus:outline-none'
+    'w-14 rounded-md border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-2 py-1 text-center text-sm focus:border-neutral-500 focus:outline-none'
 
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-neutral-600">
+    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-neutral-400">
       <span>
         Or settle from score ({handicap > 0 ? '+' : ''}
         {handicap}):
@@ -77,7 +77,7 @@ function ScoreSettle({ pick, onSettle }: { pick: Pick; onSettle: (r: PickResult)
         type="button"
         disabled={!ready}
         onClick={() => onSettle(partsToResult(settleAH(b, o, handicap)))}
-        className="rounded-md border border-neutral-300 px-2 py-1 font-medium disabled:opacity-40"
+        className="rounded-md border border-neutral-700 px-2 py-1 font-medium disabled:opacity-40"
       >
         Settle from score
       </button>
@@ -92,10 +92,10 @@ function PendingPick({ pick, match }: { pick: Pick; match: Match | undefined }) 
 
   const simple: PickResult[] = ['win', 'loss', 'void']
   const complex: PickResult[] = ['half-win', 'push', 'half-loss']
-  const btnCls = 'rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium'
+  const btnCls = 'rounded-md border border-neutral-700 px-2.5 py-1 text-xs font-medium'
 
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white p-4">
+    <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-1">
         <div>
           <span className="text-sm font-semibold">{fixtureOf(match)}</span>
@@ -104,7 +104,7 @@ function PendingPick({ pick, match }: { pick: Pick; match: Match | undefined }) 
         <span className="text-xs text-neutral-500">grabbed {fmtDateTime(pick.capturedAt)}</span>
       </div>
       <div className="mt-1 flex flex-wrap items-center gap-2 text-sm">
-        <span className="text-neutral-600">{pick.market}:</span>
+        <span className="text-neutral-400">{pick.market}:</span>
         <span className="font-medium">{pick.selection}</span>
         <span className="tabular-nums">@{pick.oddsDecimal.toFixed(2)}</span>
         <span className="tabular-nums text-neutral-500">{fmtMoney(pick.stake)} stake</span>
@@ -129,7 +129,7 @@ function PendingPick({ pick, match }: { pick: Pick; match: Match | undefined }) 
         <button
           type="button"
           onClick={() => dispatch({ type: 'deletePick', id: pick.id })}
-          className="ml-auto rounded-md px-2.5 py-1 text-xs font-medium text-red-600"
+          className="ml-auto rounded-md px-2.5 py-1 text-xs font-medium text-red-400"
         >
           Delete
         </button>
@@ -156,7 +156,7 @@ export function PicksList() {
           Pending picks{pending.length > 0 && ` (${pending.length})`}
         </h2>
         {pending.length === 0 ? (
-          <p className="rounded-xl border border-neutral-200 bg-white p-4 text-sm text-neutral-500">
+          <p className="rounded-xl border border-neutral-800 bg-neutral-900 p-4 text-sm text-neutral-500">
             No open picks. Paste an odds block or log one manually.
           </p>
         ) : (
@@ -173,14 +173,14 @@ export function PicksList() {
           History{settled.length > 0 && ` (${settled.length})`}
         </h2>
         {settled.length === 0 ? (
-          <p className="rounded-xl border border-neutral-200 bg-white p-4 text-sm text-neutral-500">
+          <p className="rounded-xl border border-neutral-800 bg-neutral-900 p-4 text-sm text-neutral-500">
             Nothing settled yet.
           </p>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-white">
+          <div className="overflow-x-auto rounded-xl border border-neutral-800 bg-neutral-900">
             <table className="w-full min-w-[560px] text-sm">
               <thead>
-                <tr className="border-b border-neutral-200 text-left text-xs uppercase tracking-wide text-neutral-500">
+                <tr className="border-b border-neutral-800 text-left text-xs uppercase tracking-wide text-neutral-500">
                   <th className="px-3 py-2 font-medium">Pick</th>
                   <th className="px-3 py-2 font-medium">Odds</th>
                   <th className="px-3 py-2 font-medium">Stake</th>
@@ -193,7 +193,7 @@ export function PicksList() {
                 {settled.map((p) => {
                   const profit = pickProfit(p)
                   return (
-                    <tr key={p.id} className="border-b border-neutral-100 last:border-b-0">
+                    <tr key={p.id} className="border-b border-neutral-800 last:border-b-0">
                       <td className="px-3 py-2">
                         <div className="font-medium">{p.selection}</div>
                         <div className="text-xs text-neutral-500">
@@ -211,7 +211,7 @@ export function PicksList() {
                       </td>
                       <td
                         className={`px-3 py-2 text-right font-medium tabular-nums ${
-                          profit > 0 ? 'text-green-700' : profit < 0 ? 'text-red-600' : 'text-neutral-500'
+                          profit > 0 ? 'text-emerald-400' : profit < 0 ? 'text-red-400' : 'text-neutral-500'
                         }`}
                       >
                         {fmtSignedMoney(profit)}

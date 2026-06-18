@@ -1,11 +1,29 @@
-# World Cup Betting Lab
+# World Cup Prop Predictor
 
-A paper-trading + prediction lab for the 2026 World Cup. Log real Singapore
-Pools odds with fake money and find out the only thing that matters: **do I
-actually have an edge?** It is a measurement tool, not a money machine.
+A model + paper-trading lab for the 2026 World Cup. A Dixon-Coles model finds
+the edges; a paper bankroll measures whether you **actually** have one. It is a
+measurement tool, not a money machine.
 
 Single-user local web app — Vite + React + TypeScript + Tailwind, persisted to
-`localStorage`, no backend.
+`localStorage`, no backend. Two tabs:
+
+- **Best Bets** — every fixture run through a Dixon-Coles scoreline model fit on
+  ~11,900 real international results. For each match the model surfaces its
+  favoured side in three core markets (match result, total goals O/U 2.5, both
+  teams to score), the implied **fair** odds, and — once you drop in a real book
+  price (or flip on illustrative demo prices) — the **edge** and **EV per $1**,
+  ranked and tiered High / Medium / Low. Hit **Log** to send a pick to the lab
+  with the model probability prefilled as your estimate.
+
+  Book prices go in by hand, or via **Auto-fill book odds from a paste** — an
+  AI importer that takes any messy odds block (abbreviations, fractional or
+  American prices, reordered columns) and maps each price to the right fixture
+  and market with Claude (`claude-opus-4-8`), then fills the matched cells. It
+  needs your own Anthropic API key, stored only in this browser's `localStorage`
+  and sent directly to `api.anthropic.com` when you click Match — never
+  anywhere else, and only on that explicit action.
+- **My Lab** — the paper-trading bankroll, manual pick logging, SG Pools
+  paste-import, settlement and the equity dashboard described below.
 
 ## MVP (Phase 1) — what's here
 
@@ -37,10 +55,23 @@ Skipping a bet is a move.
 
 ```bash
 npm install
-npm run dev      # local dev server
-npm test         # vitest — parser, settlement, stats
-npm run build    # type-check + production build
+npm run dev          # local dev server
+npm test             # vitest — parser, settlement, stats, model, best-bets
+npm run build        # type-check + production build
+npm run update-data  # re-pull latest results + WC fixtures (then reload)
 ```
+
+## CI & deploy
+
+Two GitHub Actions workflows live in [`.github/workflows`](.github/workflows):
+
+- **CI** (`ci.yml`) — on every push / PR: `npm ci`, lint, test, build.
+- **Deploy** (`deploy.yml`) — builds with the Pages base path and publishes to
+  GitHub Pages on pushes to the default branch.
+
+One-time setup for the live site: in the repo, **Settings → Pages → Build and
+deployment → Source: GitHub Actions**. The site then deploys to
+`https://<owner>.github.io/WorldCup-Project/`.
 
 ## Roadmap
 

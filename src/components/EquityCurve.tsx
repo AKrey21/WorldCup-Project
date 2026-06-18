@@ -34,22 +34,22 @@ export function EquityCurve({ points }: { points: EquityPoint[] }) {
       {/* baseline at starting bankroll */}
       <line
         x1={PAD.left} x2={W - PAD.right} y1={y(start)} y2={y(start)}
-        stroke="#d4d4d4" strokeDasharray="4 4" strokeWidth="1"
+        stroke="#404040" strokeDasharray="4 4" strokeWidth="1"
       />
       <text x={PAD.left - 6} y={y(start) + 4} textAnchor="end" fontSize="11" fill="#a3a3a3">
         {fmtMoney(start)}
       </text>
-      <text x={PAD.left - 6} y={y(max) + 4} textAnchor="end" fontSize="11" fill="#737373">
+      <text x={PAD.left - 6} y={y(max) + 4} textAnchor="end" fontSize="11" fill="#a3a3a3">
         {fmtMoney(max)}
       </text>
-      <text x={PAD.left - 6} y={y(min) + 4} textAnchor="end" fontSize="11" fill="#737373">
+      <text x={PAD.left - 6} y={y(min) + 4} textAnchor="end" fontSize="11" fill="#a3a3a3">
         {fmtMoney(min)}
       </text>
-      <path d={path} fill="none" stroke={up ? '#16a34a' : '#dc2626'} strokeWidth="2.5" strokeLinejoin="round" />
+      <path d={path} fill="none" stroke={up ? '#10b981' : '#dc2626'} strokeWidth="2.5" strokeLinejoin="round" />
       {points.map((p, i) => (
-        <circle key={i} cx={x(i)} cy={y(p.balance)} r="3" fill={up ? '#16a34a' : '#dc2626'} />
+        <circle key={i} cx={x(i)} cy={y(p.balance)} r="3" fill={up ? '#10b981' : '#dc2626'} />
       ))}
-      <text x={W - PAD.right} y={H - 6} textAnchor="end" fontSize="11" fill="#737373">
+      <text x={W - PAD.right} y={H - 6} textAnchor="end" fontSize="11" fill="#a3a3a3">
         {points.length - 1} settled · now {fmtMoney(last)}
       </text>
     </svg>

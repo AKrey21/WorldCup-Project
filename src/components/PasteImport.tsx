@@ -14,7 +14,7 @@ export function PasteImport({ onUseSelection }: { onUseSelection: (draft: PickDr
   const withMarkets = parsed?.filter((m) => m.markets.length > 0) ?? []
 
   return (
-    <section className="space-y-3 rounded-2xl border border-neutral-200 bg-white p-5">
+    <section className="space-y-3 rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
       <div>
         <h2 className="text-base font-semibold">Paste SG Pools odds</h2>
         <p className="mt-1 text-xs leading-snug text-neutral-500">
@@ -24,7 +24,7 @@ export function PasteImport({ onUseSelection }: { onUseSelection: (draft: PickDr
         </p>
       </div>
       <textarea
-        className="h-36 w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 font-mono text-xs focus:border-neutral-500 focus:outline-none"
+        className="h-36 w-full rounded-lg border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 font-mono text-xs focus:border-neutral-500 focus:outline-none"
         placeholder={'5764Portugal vs Nigeria\nThu, 12 Jun 2026, 9.00pm\n011X2\n011.28Portugal\n025.50Draw\n0310.00Nigeria'}
         value={raw}
         onChange={(e) => setRaw(e.target.value)}
@@ -32,7 +32,7 @@ export function PasteImport({ onUseSelection }: { onUseSelection: (draft: PickDr
       <button
         type="button"
         onClick={parse}
-        className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white"
+        className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
       >
         Parse
       </button>
@@ -40,20 +40,20 @@ export function PasteImport({ onUseSelection }: { onUseSelection: (draft: PickDr
       {parsed !== null && withMarkets.length === 0 && (
         <p className="text-sm text-neutral-500">
           Nothing parsed — check the paste includes selection rows like{' '}
-          <code className="rounded bg-neutral-100 px-1">011.28Portugal</code>.
+          <code className="rounded bg-neutral-800 px-1">011.28Portugal</code>.
         </p>
       )}
 
       {withMarkets.map((m) => (
-        <div key={m.id} className="rounded-xl border border-neutral-200">
-          <div className="flex flex-wrap items-baseline justify-between gap-1 border-b border-neutral-200 px-3 py-2">
+        <div key={m.id} className="rounded-xl border border-neutral-800">
+          <div className="flex flex-wrap items-baseline justify-between gap-1 border-b border-neutral-800 px-3 py-2">
             <span className="text-sm font-semibold">{m.fixture}</span>
             <span className="text-xs text-neutral-500">
               {m.kickoff ? `${m.kickoff} · ` : ''}grabbed {fmtTime(m.capturedAt)}
             </span>
           </div>
           {m.markets.map((mkt) => (
-            <div key={mkt.code + mkt.name} className="border-b border-neutral-100 px-3 py-2 last:border-b-0">
+            <div key={mkt.code + mkt.name} className="border-b border-neutral-800 px-3 py-2 last:border-b-0">
               <div className="mb-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
                 {mkt.name}
               </div>
@@ -72,7 +72,7 @@ export function PasteImport({ onUseSelection }: { onUseSelection: (draft: PickDr
                         capturedAt: m.capturedAt,
                       })
                     }
-                    className="rounded-lg border border-neutral-300 px-2.5 py-1.5 text-left text-xs"
+                    className="rounded-lg border border-neutral-700 px-2.5 py-1.5 text-left text-xs"
                   >
                     <span className="font-medium">{sel.label}</span>{' '}
                     <span className="tabular-nums">@{sel.odds.toFixed(2)}</span>{' '}

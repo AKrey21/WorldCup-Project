@@ -12,6 +12,10 @@ export interface PickDraft {
   selection: string
   odds: number
   capturedAt: string
+  /** Optional own-probability estimate to prefill (percent, 1..99). */
+  estProbPct?: number
+  /** Optional tournament stage to prefill. */
+  stage?: string
 }
 
 const STAGES = [
@@ -63,9 +67,11 @@ export function LogPickForm({ prefill }: { prefill: PickDraft | null }) {
   if (prefill && prefill !== appliedPrefill) {
     setAppliedPrefill(prefill)
     setFixture(prefill.fixture)
+    if (prefill.stage) setStage(prefill.stage)
     setMarket(prefill.market)
     setSelection(prefill.selection)
     setOdds(String(prefill.odds))
+    setEstProb(prefill.estProbPct === undefined ? '' : String(Math.round(prefill.estProbPct)))
     setKickoffISO(prefill.kickoffISO)
     setCapturedAt(prefill.capturedAt)
     setError(null)
@@ -117,11 +123,11 @@ export function LogPickForm({ prefill }: { prefill: PickDraft | null }) {
   }
 
   const inputCls =
-    'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none'
-  const labelCls = 'mb-1 block text-xs font-medium text-neutral-600'
+    'w-full rounded-lg border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none'
+  const labelCls = 'mb-1 block text-xs font-medium text-neutral-400'
 
   return (
-    <form onSubmit={submit} className="space-y-3 rounded-2xl border border-neutral-200 bg-white p-5">
+    <form onSubmit={submit} className="space-y-3 rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold">Log a pick</h2>
         <span className="text-xs text-neutral-500">
@@ -130,7 +136,7 @@ export function LogPickForm({ prefill }: { prefill: PickDraft | null }) {
       </div>
 
       {stale && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
           <span>
             Odds snapshot is {minutesAgo(capturedAt, now)} min old — re-grab from SG Pools before
             committing. Odds move.
@@ -138,7 +144,7 @@ export function LogPickForm({ prefill }: { prefill: PickDraft | null }) {
           <button
             type="button"
             onClick={() => setCapturedAt(new Date().toISOString())}
-            className="shrink-0 rounded-md border border-amber-400 px-2 py-1 font-medium"
+            className="shrink-0 rounded-md border border-amber-500/40 px-2 py-1 font-medium"
           >
             Re-stamp to now
           </button>
@@ -228,7 +234,7 @@ export function LogPickForm({ prefill }: { prefill: PickDraft | null }) {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-600">
+      <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-400">
         <span>
           Odds grabbed <span className="font-medium">{fmtTime(capturedAt)}</span>
           {minutesAgo(capturedAt, now) > 0 && ` (${minutesAgo(capturedAt, now)} min ago)`}
@@ -249,12 +255,12 @@ export function LogPickForm({ prefill }: { prefill: PickDraft | null }) {
         )}
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      {saved && !error && <p className="text-sm text-green-700">Pick logged.</p>}
+      {error && <p className="text-sm text-red-400">{error}</p>}
+      {saved && !error && <p className="text-sm text-emerald-400">Pick logged.</p>}
 
       <button
         type="submit"
-        className="w-full rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white sm:w-auto"
+        className="w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 sm:w-auto"
       >
         Log pick
       </button>

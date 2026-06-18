@@ -5,9 +5,9 @@ import { EquityCurve } from './EquityCurve'
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: 'up' | 'down' }) {
   const color =
-    tone === 'up' ? 'text-green-700' : tone === 'down' ? 'text-red-600' : 'text-neutral-900'
+    tone === 'up' ? 'text-emerald-400' : tone === 'down' ? 'text-red-400' : 'text-neutral-100'
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white px-4 py-3">
+    <div className="rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3">
       <div className="text-xs font-medium uppercase tracking-wide text-neutral-500">{label}</div>
       <div className={`mt-1 text-lg font-semibold tabular-nums ${color}`}>{value}</div>
     </div>
@@ -21,14 +21,14 @@ export function Dashboard() {
 
   return (
     <section className="space-y-4">
-      <div className="rounded-2xl border border-neutral-200 bg-white p-5">
+      <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
         <div className="flex items-baseline justify-between">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">
                 Balance
               </span>
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800">
+              <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
                 Paper money
               </span>
             </div>
@@ -38,7 +38,7 @@ export function Dashboard() {
             <div className="text-xs text-neutral-500">Net P/L</div>
             <div
               className={`text-lg font-semibold tabular-nums ${
-                s.netProfit > 0 ? 'text-green-700' : s.netProfit < 0 ? 'text-red-600' : 'text-neutral-900'
+                s.netProfit > 0 ? 'text-emerald-400' : s.netProfit < 0 ? 'text-red-400' : 'text-neutral-100'
               }`}
             >
               {fmtSignedMoney(s.netProfit)}
