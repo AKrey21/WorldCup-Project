@@ -74,6 +74,12 @@ export function OddsImportAI({
                 Paste your Anthropic API key. It is stored only in this browser (localStorage) and
                 sent directly to api.anthropic.com when you click Match — never to anyone else.
               </p>
+              <p className="rounded-md border border-amber-500/40 bg-amber-500/10 px-2.5 py-1.5 text-[11px] leading-snug text-amber-200">
+                ⚠ The key lives in your browser in plain text. On a public site (e.g. GitHub Pages)
+                it shares an origin with your other pages there, so use a{' '}
+                <span className="font-semibold">dedicated, spend-capped</span> key you can revoke —
+                not your main one. The board works without a key; only the AI features need it.
+              </p>
               <div className="flex gap-2">
                 <input
                   type="password"
