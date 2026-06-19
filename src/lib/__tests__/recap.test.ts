@@ -86,8 +86,8 @@ describe('skips matches with a team the model has never seen', () => {
 describe('played dataset', () => {
   const played = loadPlayedResults()
 
-  it('holds the 24 matchday-1 results', () => {
-    expect(played).toHaveLength(24)
+  it('holds the 28 matchday-1 and Group A/B matchday-2 results', () => {
+    expect(played).toHaveLength(28)
     for (const m of played) {
       expect(m.date >= '2026-06-11' && m.date <= '2026-06-18').toBe(true)
       expect(Number.isInteger(m.homeScore)).toBe(true)
@@ -117,7 +117,7 @@ describe('recap on the real model + real results', () => {
   const recap = buildRecap(getPreTournamentModel(), loadPlayedResults())
 
   it('recognises every team (the matchups come from the same source as the model)', () => {
-    expect(recap.summary.n + recap.skipped.length).toBe(24)
+    expect(recap.summary.n + recap.skipped.length).toBe(28)
     // All 2026 sides exist in the historical international dataset.
     expect(recap.skipped).toHaveLength(0)
   })
@@ -135,7 +135,7 @@ describe('recap on the real model + real results', () => {
 
   it('benchmarks the model against the de-vigged book on the priced subset', () => {
     expect(recap.market).not.toBeNull()
-    // 10 of the 24 played games carry odds (see played.json).
+    // 10 of the 28 played games carry odds (see played.json).
     expect(recap.market!.n).toBe(10)
     expect(Number.isFinite(recap.market!.brierSkillScore)).toBe(true)
     expect(recap.market!.modelSharperCount).toBeGreaterThanOrEqual(0)

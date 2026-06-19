@@ -1,6 +1,6 @@
 {
   "source": "Wikipedia — 2026 FIFA World Cup group pages (Groups A–L)",
-  "note": "Matchday-1 results, cross-checked against per-group Wikipedia tables. Host nations (Mexico, Canada, United States) are not on neutral ground; all other games are neutral. Scored by getPreTournamentModel() — a fit on internationals before 2026-06-11 — so the recap is a true held-out test even though the upstream results feed already carries some of these games.",
+  "note": "Matchday-1 results plus the Group A & B matchday-2 games played 2026-06-18, cross-checked against per-group Wikipedia tables. Host nations (Mexico, Canada, United States) are not on neutral ground; all other games are neutral. Scored by getPreTournamentModel() — a fit on internationals before 2026-06-11 — so the recap is a true held-out test even though the upstream results feed already carries some of these games.",
   "oddsNote": "Optional `odds` = best-available pre-match 1X2 decimal prices (home/draw/away) for the model-vs-market benchmark. Sources: article fetches (England–Croatia from ESPN; Iran–NZ, Spain–Cape Verde, Belgium–Egypt from CBS/Racing Post/SportsLine) and FanDuel prices quoted in match previews (Argentina, France, Brazil, USA, Germany, Netherlands). Mixed books and capture times — approximate, not synchronised closing lines. The benchmark de-vigs each set; matches without odds are excluded from the market comparison.",
   "asOf": "2026-06-18",
   "matches": [
@@ -27,6 +27,10 @@
     { "date": "2026-06-17", "home": "Portugal", "away": "DR Congo", "homeScore": 1, "awayScore": 1, "neutral": 1, "group": "K" },
     { "date": "2026-06-17", "home": "Uzbekistan", "away": "Colombia", "homeScore": 1, "awayScore": 3, "neutral": 1, "group": "K" },
     { "date": "2026-06-17", "home": "England", "away": "Croatia", "homeScore": 4, "awayScore": 2, "neutral": 1, "group": "L", "odds": { "home": 1.69, "draw": 3.75, "away": 5.25 } },
-    { "date": "2026-06-17", "home": "Ghana", "away": "Panama", "homeScore": 1, "awayScore": 0, "neutral": 1, "group": "L" }
+    { "date": "2026-06-17", "home": "Ghana", "away": "Panama", "homeScore": 1, "awayScore": 0, "neutral": 1, "group": "L" },
+    { "date": "2026-06-18", "home": "Czech Republic", "away": "South Africa", "homeScore": 1, "awayScore": 1, "neutral": 1, "group": "A" },
+    { "date": "2026-06-18", "home": "Mexico", "away": "South Korea", "homeScore": 1, "awayScore": 0, "neutral": 0, "group": "A" },
+    { "date": "2026-06-18", "home": "Switzerland", "away": "Bosnia and Herzegovina", "homeScore": 4, "awayScore": 1, "neutral": 1, "group": "B" },
+    { "date": "2026-06-18", "home": "Canada", "away": "Qatar", "homeScore": 6, "awayScore": 0, "neutral": 0, "group": "B" }
   ]
 }
