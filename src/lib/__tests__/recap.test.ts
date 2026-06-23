@@ -86,10 +86,10 @@ describe('skips matches with a team the model has never seen', () => {
 describe('played dataset', () => {
   const played = loadPlayedResults()
 
-  it('holds the 28 matchday-1 and Group A/B matchday-2 results', () => {
-    expect(played).toHaveLength(28)
+  it('holds the matchday-1 and matchday-2 results through 2026-06-22', () => {
+    expect(played).toHaveLength(43)
     for (const m of played) {
-      expect(m.date >= '2026-06-11' && m.date <= '2026-06-18').toBe(true)
+      expect(m.date >= '2026-06-11' && m.date <= '2026-06-22').toBe(true)
       expect(Number.isInteger(m.homeScore)).toBe(true)
       expect(Number.isInteger(m.awayScore)).toBe(true)
       expect(m.neutral === 0 || m.neutral === 1).toBe(true)
@@ -117,7 +117,7 @@ describe('recap on the real model + real results', () => {
   const recap = buildRecap(getPreTournamentModel(), loadPlayedResults())
 
   it('recognises every team (the matchups come from the same source as the model)', () => {
-    expect(recap.summary.n + recap.skipped.length).toBe(28)
+    expect(recap.summary.n + recap.skipped.length).toBe(43)
     // All 2026 sides exist in the historical international dataset.
     expect(recap.skipped).toHaveLength(0)
   })

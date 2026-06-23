@@ -5,7 +5,7 @@ import { getModel, getPreTournamentModel } from '../bestbets'
 describe('goalEnvironment', () => {
   it('measures this tournament as running hot (observed gpg > expected)', () => {
     const env = goalEnvironment(getPreTournamentModel())
-    expect(env.n).toBe(28)
+    expect(env.n).toBe(43)
     expect(env.observedGpg).toBeGreaterThan(env.expectedGpg)
     expect(env.rawScale).toBeGreaterThan(1)
   })

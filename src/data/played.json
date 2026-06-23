@@ -1,8 +1,8 @@
 {
   "source": "Wikipedia — 2026 FIFA World Cup group pages (Groups A–L)",
-  "note": "Matchday-1 results plus the Group A & B matchday-2 games played 2026-06-18, cross-checked against per-group Wikipedia tables. Host nations (Mexico, Canada, United States) are not on neutral ground; all other games are neutral. Scored by getPreTournamentModel() — a fit on internationals before 2026-06-11 — so the recap is a true held-out test even though the upstream results feed already carries some of these games.",
+  "note": "Matchday-1 results, the Group A & B matchday-2 games played 2026-06-18, and the Group C–J matchday-2 games played 2026-06-19 through 2026-06-22, cross-checked against per-group Wikipedia tables and major outlets (ESPN/Yahoo/NBC/Al Jazeera/FIFA). Group J's Jordan–Algeria (late 06-22 kick-off) is pending a confirmed final score and is not yet included. Host nations (Mexico, Canada, United States) are not on neutral ground; all other games are neutral. Scored by getPreTournamentModel() — a fit on internationals before 2026-06-11 — so the recap is a true held-out test even though the upstream results feed already carries some of these games.",
   "oddsNote": "Optional `odds` = best-available pre-match 1X2 decimal prices (home/draw/away) for the model-vs-market benchmark. Sources: article fetches (England–Croatia from ESPN; Iran–NZ, Spain–Cape Verde, Belgium–Egypt from CBS/Racing Post/SportsLine) and FanDuel prices quoted in match previews (Argentina, France, Brazil, USA, Germany, Netherlands). Mixed books and capture times — approximate, not synchronised closing lines. The benchmark de-vigs each set; matches without odds are excluded from the market comparison.",
-  "asOf": "2026-06-18",
+  "asOf": "2026-06-22",
   "matches": [
     { "date": "2026-06-11", "home": "Mexico", "away": "South Africa", "homeScore": 2, "awayScore": 0, "neutral": 0, "group": "A" },
     { "date": "2026-06-11", "home": "South Korea", "away": "Czech Republic", "homeScore": 2, "awayScore": 1, "neutral": 1, "group": "A" },
@@ -31,6 +31,21 @@
     { "date": "2026-06-18", "home": "Czech Republic", "away": "South Africa", "homeScore": 1, "awayScore": 1, "neutral": 1, "group": "A" },
     { "date": "2026-06-18", "home": "Mexico", "away": "South Korea", "homeScore": 1, "awayScore": 0, "neutral": 0, "group": "A" },
     { "date": "2026-06-18", "home": "Switzerland", "away": "Bosnia and Herzegovina", "homeScore": 4, "awayScore": 1, "neutral": 1, "group": "B" },
-    { "date": "2026-06-18", "home": "Canada", "away": "Qatar", "homeScore": 6, "awayScore": 0, "neutral": 0, "group": "B" }
+    { "date": "2026-06-18", "home": "Canada", "away": "Qatar", "homeScore": 6, "awayScore": 0, "neutral": 0, "group": "B" },
+    { "date": "2026-06-19", "home": "Scotland", "away": "Morocco", "homeScore": 0, "awayScore": 1, "neutral": 1, "group": "C" },
+    { "date": "2026-06-19", "home": "Brazil", "away": "Haiti", "homeScore": 3, "awayScore": 0, "neutral": 1, "group": "C" },
+    { "date": "2026-06-19", "home": "United States", "away": "Australia", "homeScore": 2, "awayScore": 0, "neutral": 0, "group": "D" },
+    { "date": "2026-06-19", "home": "Turkey", "away": "Paraguay", "homeScore": 0, "awayScore": 1, "neutral": 1, "group": "D" },
+    { "date": "2026-06-20", "home": "Germany", "away": "Ivory Coast", "homeScore": 2, "awayScore": 1, "neutral": 1, "group": "E" },
+    { "date": "2026-06-20", "home": "Ecuador", "away": "Curaçao", "homeScore": 0, "awayScore": 0, "neutral": 1, "group": "E" },
+    { "date": "2026-06-20", "home": "Netherlands", "away": "Sweden", "homeScore": 5, "awayScore": 1, "neutral": 1, "group": "F" },
+    { "date": "2026-06-20", "home": "Tunisia", "away": "Japan", "homeScore": 0, "awayScore": 4, "neutral": 1, "group": "F" },
+    { "date": "2026-06-21", "home": "Belgium", "away": "Iran", "homeScore": 0, "awayScore": 0, "neutral": 1, "group": "G" },
+    { "date": "2026-06-21", "home": "New Zealand", "away": "Egypt", "homeScore": 1, "awayScore": 3, "neutral": 1, "group": "G" },
+    { "date": "2026-06-21", "home": "Spain", "away": "Saudi Arabia", "homeScore": 4, "awayScore": 0, "neutral": 1, "group": "H" },
+    { "date": "2026-06-21", "home": "Uruguay", "away": "Cape Verde", "homeScore": 2, "awayScore": 2, "neutral": 1, "group": "H" },
+    { "date": "2026-06-22", "home": "France", "away": "Iraq", "homeScore": 3, "awayScore": 0, "neutral": 1, "group": "I" },
+    { "date": "2026-06-22", "home": "Norway", "away": "Senegal", "homeScore": 3, "awayScore": 2, "neutral": 1, "group": "I" },
+    { "date": "2026-06-22", "home": "Argentina", "away": "Austria", "homeScore": 2, "awayScore": 0, "neutral": 1, "group": "J" }
   ]
 }
